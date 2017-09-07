@@ -76,12 +76,29 @@ app.get('/auth/callback', passport.authenticate('auth0', {
     failureRedicrect:'http://localhost:3000/#/',
 }))
 
+//this next app.get adds to req.user so anyone can get it
+
+app.get('/auth/me',(req, res) =>{
+    if (!req.user){
+        return res.status(404).send('User not fount')
+    } else{
+        return res.status(200).send(req.user)
+    }
+    
+})
+
+
+app.get('/auth/logout',(req,res) => {
+    req.logOut() //Passport gives us this to terminate a login session.
+    return res.redirect(302, 'http://localhost:3000/#/');
+    //res.redirect comes from express to redirect the user to the given url.
+})
+
+
+
 let PORT = 3005;
 
 console.log(process.env.TEST) //This makes your ENV file print in console
-
-
-
 
 app.listen(PORT, () => {
     console.log(`Listening on port: ${PORT}`);
